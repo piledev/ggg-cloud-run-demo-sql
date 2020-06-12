@@ -6,13 +6,14 @@ FROM (
   SELECT DATETIME_ADD( DATETIME @begin_at , INTERVAL unit SECOND) AS timestamp
   FROM (
     SELECT sec * @interval_seconds as unit
-    FROM UNNEST(
-      GENERATE_ARRAY(
-        0, 
-        CAST( DATETIME_DIFF( COALESCE( DATETIME @end_at, CURRENT_DATETIME() ), DATETIME @begin_at, SECOND ) AS INT64),
-        @interval_seconds 
-      )
-    ) 
+    FROM 
+      UNNEST(
+        GENERATE_ARRAY(
+          0, 
+          CAST( DATETIME_DIFF( COALESCE( DATETIME @end_at, CURRENT_DATETIME() ), DATETIME @begin_at, SECOND ) AS INT64),
+          @interval_seconds 
+        )
+      ) 
     WITH OFFSET AS sec
     )
 ) AS A
